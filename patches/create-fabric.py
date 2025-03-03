@@ -5,8 +5,10 @@ import random
 import re
 
 URL = 'https://github.com/Fabricators-of-Create/Create.git'
+COMMIT = 'd29676b82f1d17a59b81369846a50c0c8205a5e9'
+BRANCH = 'mc1.20.1/fabric/dev'
 TEMP = f"/tmp/create/{os.getpid()}{random.randint(10 ** 6, 10 ** 7)}"
-PATCH_VERSION = '8.0'
+PATCH_VERSION = '8.3'
 
 
 if __name__ == '__main__':
@@ -22,7 +24,10 @@ if __name__ == '__main__':
     pathlib.Path(TEMP).mkdir(parents=True, exist_ok=True)
 
     # Run git clone
-    subprocess.run(['git', 'clone', URL], cwd=TEMP, check=True, stdout=None)
+    subprocess.run(['git', 'clone', '--branch', BRANCH, '--single-branch', URL], cwd=TEMP, check=True, stdout=None)
+
+    # Run git checkout
+    subprocess.run(['git', 'checkout', COMMIT], cwd=os.path.join(TEMP, 'Create'), check=True, stdout=None)
 
     # `gradle.properties`
     with open(os.path.join(TEMP, 'Create/gradle.properties'), 'r+') as file:
@@ -170,6 +175,14 @@ if __name__ == '__main__':
         # replace contacts
         content = re.sub(r'"issues": "[^\n]*",', '"issues": "https://github.com/Lenamerkli/Create/issues",', content)
         content = re.sub(r'"sources": "[^\n]*",', '"sources": "https://github.com/Lenamerkli/Create",', content)
+        # write
+        file.seek(0)
+        file.write(content)
+        file.truncate()
+        
+    # `SmartBlockEntityTicker.java`
+    with open(os.path.join(TEMP, 'Create/src/main/java/com/simibubi/create/foundation/blockEntity/SmartBlockEntityTicker.java'), 'r+') as file:
+        content = """package com.simibubi.create.foundation.blockEntity;\n\nimport net.minecraft.core.BlockPos;\nimport net.minecraft.world.level.Level;\nimport net.minecraft.world.level.block.entity.BlockEntity;\nimport net.minecraft.world.level.block.entity.BlockEntityTicker;\nimport net.minecraft.world.level.block.state.BlockState;\nimport com.simibubi.create.Create;\n\nimport org.jetbrains.annotations.NotNull;\n\npublic class SmartBlockEntityTicker<T extends BlockEntity> implements BlockEntityTicker<T> {\n\n	@Override\n	public void tick(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, T blockEntity) {\n		if (!blockEntity.hasLevel())\n			blockEntity.setLevel(level);\n		try {\n			((SmartBlockEntity) blockEntity).tick();\n		} catch (ClassCastException e) {\n			Create.LOGGER.error("Failed to tick BlockEntity", e);\n		}\n	}\n\n}\n"""
         # write
         file.seek(0)
         file.write(content)
