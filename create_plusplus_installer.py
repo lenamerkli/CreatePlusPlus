@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-from random import randint
+from json import load as json_load, dump as json_dump, JSONDecodeError
 from os import getpid, getlogin
 from os.path import dirname
+from pathlib import Path
 from platform import system as platform_system
 from rich.console import Console
 from sys import exit
-from json import load as json_load, dump as json_dump, JSONDecodeError
-from pathlib import Path
 
 
 VERSION = '1.0.0'
@@ -79,16 +78,15 @@ def write_config(os: str, config: dict) -> None:
 
 def get_temp(os: str) -> str:
     if os == 'Linux' or os == 'Darwin':
-        return f"/tmp/create_installer/{getpid()}_{randint(10 ** 6, 10 ** 7)}/"
+        return f"/tmp/create_installer/"
     elif os == 'Windows':
-        return f"C:\\Users\\{getlogin()}\\AppData\\Local\\Temp\\create_installer\\{getpid()}_{randint(10 ** 6, 10 ** 7)}\\"
-    CONSOLE.print(f"[red bold]Nicht unterstütztes Betriebssystem: `{os}`[/]")
-    exit(1)
+        return f"C:\\Users\\{getlogin()}\\AppData\\Local\\Temp\\create_installer\\"
+    raise_error(f"Nicht unterstütztes Betriebssystem: `{os}`")
     return ''
 
 
 def select(options: list[str]) -> int:
-    CONSOLE.print(f"[purple]{'-' * 8}[/] [purple bold]Wählen Sie eine Option:[/] [purple]{'-' * 8}[/]")
+    CONSOLE.print(f"[purple]{'-' * 12}[/] [purple bold]Wählen Sie eine Option:[/] [purple]{'-' * 12}[/]")
     for i, option in enumerate(options):
         CONSOLE.print(f"[purple bold]{i + 1}[/]: {option}")
     CONSOLE.print(f"Oder [purple bold]c[/] um abzubrechen.")
@@ -98,7 +96,7 @@ def select(options: list[str]) -> int:
         try:
             choice = input("Wählen Sie eine Option: ")
             if choice == 'c':
-                CONSOLE.print("[red bold]Der Create++ Installer wird beendet.[/]")
+                CONSOLE.print("[orange1 bold]Der Create++ Installer wird beendet.[/]")
                 exit(0)
                 choice = -1
             choice = int(choice)
