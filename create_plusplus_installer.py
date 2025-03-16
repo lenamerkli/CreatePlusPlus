@@ -168,7 +168,6 @@ def ui_main() -> None:
         'Create++ mit Unterstützung aktualisieren',
         'Benutzer setzen',
         'Dateien extrahieren',
-        'Create++ Installer deinstallieren',
     ])
     if choice_1 == 1:
         pass
@@ -177,8 +176,6 @@ def ui_main() -> None:
     elif choice_1 == 3:
         ui_set_user()
     elif choice_1 == 4:
-        pass
-    elif choice_1 == 5:
         pass
     else:
         raise_error(f"Ungültige Auswahl: {choice_1}")
