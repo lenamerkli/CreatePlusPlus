@@ -25,6 +25,11 @@ DEFAULT_CONFIG = {
 
 
 def raise_error(message: str) -> None:
+    """
+    Raise an error
+    :param message: The error message
+    :return: None
+    """
     CONSOLE.print(f"[red bold]Beim Ausführen des Create++ Installers ist ein Fehler aufgetreten.[/]")
     CONSOLE.print(f"[red bold]{message}[/]")
     exit(1)
@@ -59,6 +64,10 @@ def get_config() -> str:
 
 
 def read_config() -> dict:
+    """
+    Read the permanent user configuration
+    :return: The configuration
+    """
     try:
         with open(get_config(), 'r') as file:
             contents = json_load(file)
@@ -68,6 +77,11 @@ def read_config() -> dict:
 
 
 def write_config(config: dict) -> None:
+    """
+    Write the permanent user configuration
+    :param config: The configuration
+    :return: None
+    """
     config_file = get_config()
     Path(dirname(config_file)).mkdir(parents=True, exist_ok=True)
     with open(config_file, 'w') as file:
@@ -77,6 +91,10 @@ def write_config(config: dict) -> None:
 
 
 def get_temp() -> str:
+    """
+    Get the path to the temporary directory
+    :return: the absolute directory path
+    """
     os = get_os()
     if os == 'Linux' or os == 'Darwin':
         return f"/tmp/create_installer/"
@@ -87,6 +105,11 @@ def get_temp() -> str:
 
 
 def select(options: list[str]) -> int:
+    """
+    Print an options menu
+    :param options: A list of options
+    :return: The index of the selected option, starting with 1
+    """
     CONSOLE.print(f"[purple]{'-' * 12}[/] [purple bold]Wählen Sie eine Option:[/] [purple]{'-' * 12}[/]")
     for i, option in enumerate(options):
         CONSOLE.print(f"[purple bold]{i + 1}[/]: {option}")
