@@ -8,14 +8,14 @@ URL = 'https://github.com/Fabricators-of-Create/Create.git'
 COMMIT = 'd29676b82f1d17a59b81369846a50c0c8205a5e9'
 BRANCH = 'mc1.20.1/fabric/dev'
 TEMP = f"/tmp/create/{os.getpid()}{random.randint(10 ** 6, 10 ** 7)}"
-PATCH_VERSION = '8.3'
+VERSION = '0.5.1-j-build.1631+mc1.20.1+createplusplus8.4'
 
 
 if __name__ == '__main__':
     if os.name != 'posix':
         raise RuntimeError('This script only works on Linux')
 
-    print(f'Patching Create with version {PATCH_VERSION} in `{TEMP}`')
+    print(f'Patching Create with version {VERSION} in `{TEMP}`')
 
     if os.path.exists(TEMP):
         raise RuntimeError(f'`{TEMP}` already exists, aborting')
@@ -36,8 +36,16 @@ if __name__ == '__main__':
         content = re.sub(r'recipe_viewer = [.]{3}', r'recipe_viewer = rei', content)
         # change version
 
-        original_version = re.search(r'mod_version = ([^,\n]*)', content).group(1)
-        content = re.sub(r'mod_version = [^,\n]*', f'mod_version = {original_version.strip()}-create_plusplus{PATCH_VERSION}', content)
+        content = re.sub(r'mod_version = [^,\n]*', f'mod_version = {VERSION}', content)
+        # write
+        file.seek(0)
+        file.write(content)
+        file.truncate()
+
+    # `build.gradle`
+    with open(os.path.join(TEMP, 'Create/build.gradle'), 'r+') as file:
+        content = file.read()
+        content = content.replace('    maven { url = "https://maven.tterrag.com/" } // Flywheel', '    maven { url = "https://maven.createmod.net/" } // Flywheel\n    maven { url = "https://jitpack.io" } // Flywheel')
         # write
         file.seek(0)
         file.write(content)
