@@ -251,7 +251,7 @@ if __name__ == '__main__':
         file.write('{\n  "type": "create:compacting",\n  "ingredients": [\n    {\n      "item": "minecraft:tuff"\n    },\n    {\n      "item": "create:limestone"\n    },\n    {\n      "fluid": "minecraft:lava",\n      "nbt": {},\n      "amount": 12000\n    }\n  ],\n  "results": [\n    {\n      "item": "create:veridium",\n      "count": 2\n    }\n  ]\n}')
 
     # build
-    subprocess.run(['./gradlew', 'build'], cwd=os.path.join(TEMP, 'Create'), check=True, stdout=None)
+    subprocess.run(['./gradlew', 'build'], cwd=os.path.join(TEMP, 'Create'), check=True, stdout=None, env={'JAVA_HOME': '/home/lena/.jdks/temurin-17.0.13'})
 
     # make dir
     pathlib.Path('~/Desktop/create_plusplus/').expanduser().mkdir(parents=True, exist_ok=True)
