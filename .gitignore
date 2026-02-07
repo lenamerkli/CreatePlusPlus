@@ -163,3 +163,5 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
+grafikdateien-sbb-piktogramme-svg/
+png-output/
